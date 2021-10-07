@@ -26,7 +26,7 @@ from largest_empty_circle import *
 #function getfilename to return the input argv filename
 def get_filename():
     return sys.argv[1] 
-print("testing git")
+
 #function array_to_points converts an array into a list of points (can be used for 3 out of the 4 problem types)
 def array_to_points(data_array):
     #Removes the first element of the array since we dont need it anymore (problem type)
