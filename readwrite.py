@@ -6,13 +6,19 @@
 from datetime import datetime
 # Import the os module 
 import os
+#read_txt function reads an input file and parses it into an array it will return
+from _main_ import *
+from errors import *
 
 #read_txt function reads an input file and parses it into an array it will return
 def read_txt(filename):
-
+    if filename=="":
+        raise NoUserInput()
+        
     #try to read file
     try:
         # get current working directory and add folder and filename to current working directory path 
+        print(os.getcwd())
         cwd = os.getcwd() + '/input/' + filename
         print(cwd)
         inputfile = open(cwd, 'r')
@@ -24,11 +30,11 @@ def read_txt(filename):
             data_array.append(line.strip())
         inputfile.close()
     except FileNotFoundError:
-        #throw error if the file does not exist and quit the program
-        print("File does not exist!")
-        quit()
+        raise FileNotFoundError
     return data_array
     
+    
+
 
 #write_txt function takes in an input string and saves it to a txt file with current date and time 
 def write_txt(result):

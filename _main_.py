@@ -10,22 +10,26 @@
 #   Hope Elizabeth Fetrow
 
 #imports
-from posix import POSIX_FADV_NOREUSE
+import os
 import sys
-
 from points import *
 from lines import *
-
 from readwrite import *
-
 from closest_pair_points import *
 from intersecting_lines import *
 from convex_hull import *
 from largest_empty_circle import *
 
-#function getfilename to return the input argv filename
-def get_filename():
-    return sys.argv[1] 
+from errors import *
+
+
+# function to get problem choice from user 
+# which is the text file to read from 
+def display_menu():
+    u = ""    
+    u = input("Enter file name")
+    return u
+
 
 #function array_to_points converts an array into a list of points (can be used for 3 out of the 4 problem types)
 def array_to_points(data_array):
@@ -70,38 +74,48 @@ def array_to_lines(data_array):
 
     return linelist
     
+def call_problem(data_array):
+    #holds string that will be returned to print to a file
+    results = ''
+
+    #else if the first line of the file asks for closest pair of points run this
+    if(data_array[0] == 'Closest Pair Of Points'):
+        results = calculate_closest(array_to_points(data_array))
+
+    #else if the first line of the file asks for the Convex Hull
+    elif(data_array[0] == 'Convex Hull'):
+        results = find_convex_hull(array_to_points(data_array))
+        
+    #else if the first line of the file asks for the Largest empty circle
+    elif(data_array[0] == 'Largest Empty Circle'):
+        results = find_largest_empty_circle(array_to_points(data_array))
+        
+    #if the first line of the file asks for intersection run this code
+    elif(data_array[0] == 'Line Segment Intersection'):
+        results = find_intersections(array_to_lines(data_array))
+
+    #write_txt(results)
+    return results
+
 #main class
 class Main:
     @staticmethod
     def __init__(*args: str) -> None:
 
-        #get the user input filename
-        filename = get_filename()
-
-        #parse the text file to an array
-        data_array = read_txt(filename)
-
-        #holds string that will be returned to print to a file
-        results = ''
-
-        #else if the first line of the file asks for closest pair of points run this
-        if(data_array[0] == 'Closest Pair Of Points'):
-            results = calculate_closest(array_to_points(data_array))
-
-        #else if the first line of the file asks for the Convex Hull
-        elif(data_array[0] == 'Convex Hull'):
-            results = find_convex_hull(array_to_points(data_array))
         
-        #else if the first line of the file asks for the Largest empty circle
-        elif(data_array[0] == 'Largest Empty Circle'):
-            results = find_largest_empty_circle(array_to_points(data_array))
-        
-        #if the first line of the file asks for intersection run this code
-        elif(data_array[0] == 'Line Segment Intersection'):
-            results = find_intersections(array_to_lines(data_array))
-
-        print(results)
-        #write_txt(results)
+        try:
+            #get the user input filename
+            filename = display_menu()
+            #read text file 
+            data_array = read_txt(filename)
+            #call appropiate problem class 
+            results = call_problem(data_array)
+        except NoUserInput:
+            print("Nothing entered, enter a file name: ")
+            Main()
+        except FileNotFoundError:
+            print("File was not found, enter a file name: ")            
+            Main()
 
         return
 if __name__ == '__main__':
